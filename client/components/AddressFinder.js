@@ -192,6 +192,12 @@ export default class AddressFinder extends React.Component {
         />
         <input
           className="inputNormal"
+          value={locality}
+          onChange={this.handleAddressInputChange.bind(this, 'locality')}
+          placeholder="Locality"
+        />
+        <input
+          className="inputNormal"
           value={administrativeArea}
           onChange={this.handleAddressInputChange.bind(this, 'administrativeArea')}
           placeholder="Administrative area"
