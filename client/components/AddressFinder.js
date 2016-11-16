@@ -8,10 +8,10 @@ export default class AddressFinder extends React.Component {
     super(props);
 
     this.state = {
-      maxDistance: "",
+      maxDistance: 60000000,
       isLatLong: true,
-      lat: "",
-      long: "",
+      lat: 37.331967,
+      long: -122.030306,
       street_number: "",
       route: "",
       locality: "",
