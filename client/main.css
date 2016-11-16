@@ -64,7 +64,6 @@ button:hover {
 
 .latLongInputs .inputNormal {
   margin: 0 5px;
-
 }
 
 .addressInputs {
@@ -73,6 +72,12 @@ button:hover {
   align-items: center;
   flex-direction: column;
   margin-bottom: 10px;
+}
+
+.errorMessage {
+  text-align: center;
+  font-weight: 900;
+  color: #b00;
 }
 
 .addressInputs .inputNormal {
@@ -84,6 +89,17 @@ button:hover {
   width: 100%;
 }
 
+.addressLoader {
+  text-align: center;
+  height: 50px;
+  width: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+/* ------------------- Utilities ------------------- */
+
 .centerBlock {
   margin-left: auto;
   margin-right: auto;
@@ -92,4 +108,8 @@ button:hover {
 
 .mb20 {
   margin-bottom: 20px;
+}
+
+.p20 {
+  padding: 20px;
 }

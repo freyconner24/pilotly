@@ -9,14 +9,11 @@ var geoCoords = module.exports = {
         administrativeArea,
         country,
         postalCode,
-        latitude,
-        longitude,
       } = address;
 
       if(
         addressObject.street_number == street_number &&
         addressObject.route == route &&
-        addressObject.locality == locality &&
         addressObject.locality == locality &&
         addressObject.administrativeArea == administrativeArea &&
         addressObject.country == country &&
@@ -24,11 +21,11 @@ var geoCoords = module.exports = {
       ) {
         resAddress = address;
       }
-
-      if(!resAddress) {
-        return null;
-      }
     });
+
+    if(!resAddress) {
+      return null;
+    }
 
     return {
       lat: resAddress.latitude,

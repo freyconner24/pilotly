@@ -4,7 +4,11 @@ import AddressRow from './AddressRow'
 export default class AddressTable extends React.Component {
 
   renderAddressRows() {
-    return this.props.addresses.map((address, i) => {
+    const addresses = this.props.addresses;
+    if(!addresses.length) {
+      return <div className="p20">No addresses to display</div>
+    }
+    return addresses.map((address, i) => {
       return (
         <AddressRow
           key={i}

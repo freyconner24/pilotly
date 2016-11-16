@@ -1,52 +1,32 @@
 import React from 'react';
 import AddressTable from './AddressTable'
+import Api from '../../modules/Api'
+import Status from '../../modules/Status'
 
 export default class AddressFinder extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      maxDistance: "500000",
+      maxDistance: "",
       isLatLong: true,
-      lat: 37.331967,
-      long: -122.030306,
-      street_number: 1,
-      route: "Infinite Loop",
-      locality: "Cupertino",
-      administrativeArea: "CA",
-      country: "United States",
-      postalCode: "95014",
-      addresses: []
+      lat: "",
+      long: "",
+      street_number: "",
+      route: "",
+      locality: "",
+      administrativeArea: "",
+      country: "",
+      postalCode: "",
+      addresses: [],
+      inputStatus: Status.INITIAL,
+      inputError: ""
     }
 
     this.calculateDistanceEndpoint = "http://localhost:3000/getFilteredAddresses";
   }
 
   componentDidMount() {
-  }
-
-  fetchPost(url, data) {
-    let options = {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    }
-
-    if(arguments.length > 1) {
-      options.body = JSON.stringify(data);
-    }
-
-    return fetch(url, options)
-    .then(res => res.json())
-    .then((res) => {
-      if(res.error) {
-        throw res;
-      }
-
-      return res;
-    })
   }
 
   handleAddressInputChange(key, e) {
@@ -104,6 +84,7 @@ export default class AddressFinder extends React.Component {
   }
 
   getAddresses() {
+    this.setState({inputStatus: Status.PENDING});
     let {
       maxDistance,
       latLongOrAddress,
@@ -119,14 +100,21 @@ export default class AddressFinder extends React.Component {
       data.addressObject = this.getAddressObject();
     }
 
-    this.fetchPost(this.calculateDistanceEndpoint, data)
+    Api.post(this.calculateDistanceEndpoint, data)
     .then((addresses) => {
-      console.log("addresses", addresses);
-      if(addresses.error) {
-        // handle error
-      } else {
-        this.setState({addresses: addresses});
-      }
+      // console.log("addresses", addresses);
+      this.setState({
+        addresses: addresses,
+        inputStatus: Status.SUCCESS
+      });
+    })
+    .catch((err) => {
+      console.log("err", err);
+      this.setState({
+        inputStatus: Status.ERROR,
+        addresses: [],
+        inputError: err.error
+      });
     })
   }
 
@@ -224,6 +212,34 @@ export default class AddressFinder extends React.Component {
     );
   }
 
+  renderInputStatus(inputStatus) {
+    switch (inputStatus) {
+      case Status.INITIAL:
+        return null;
+      case Status.ERROR:
+        return <div className="errorMessage" style={{marginBottom: "20px"}}>You got an error: {this.state.inputError}</div>;
+      case Status.PENDING:
+        return <img className="addressLoader" src="https://graphiclineweb.files.wordpress.com/2013/10/ajaxloader.gif?w=604" />;
+      default:
+        return null;
+    }
+  }
+
+  renderAddressTable() {
+    const {
+      inputStatus,
+      addresses
+    } = this.state;
+
+    if(inputStatus == Status.SUCCESS) {
+      return <AddressTable
+        addresses={addresses}
+      />;
+    }
+
+    return null;
+  }
+
   render() {
     const pr = this.props;
     const {
@@ -231,6 +247,7 @@ export default class AddressFinder extends React.Component {
       maxDistance,
       isLatLong,
       addresses,
+      inputStatus,
     } = this.state;
 
     return (
@@ -262,9 +279,8 @@ export default class AddressFinder extends React.Component {
             GET ADDRESSES
           </button>
         </div>
-        <AddressTable
-          addresses={addresses}
-        />
+        {this.renderInputStatus(inputStatus)}
+        {this.renderAddressTable()}
       </div>
     )
   }
